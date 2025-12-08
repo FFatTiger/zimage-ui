@@ -30,7 +30,7 @@ function App() {
     const [showQuickInput, setShowQuickInput] = useState(true);
     const [activeTab, setActiveTab] = useState('history'); // 'history' or 'gallery'
     const [showUsernameModal, setShowUsernameModal] = useState(!username);
-    const [nsfwMode, setNsfwMode] = useState(true);
+    const [nsfwMode, setNsfwMode] = useLocalStorage('nsfw_mode', true);
 
     // Generation parameters
     const [params, setParams] = useState({

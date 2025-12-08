@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { X, Trash2, Clock, Share2, Moon, Sun, Eye, EyeOff, Users } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -6,9 +6,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import ImageList from './ImageList';
-import Lightbox from 'yet-another-react-lightbox';
-import Zoom from 'yet-another-react-lightbox/plugins/zoom';
-import 'yet-another-react-lightbox/styles.css';
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
@@ -21,7 +18,6 @@ function Sidebar({
     isDarkMode, toggleDarkMode, nsfwMode, onToggleNsfwMode
 }) {
     const { t } = useTranslation();
-    const [viewerImage, setViewerImage] = useState(null);
 
     const handleOpenChange = useCallback((open) => {
         setShowSidebar(open);
@@ -87,7 +83,6 @@ function Sidebar({
                                 items={gallery}
                                 variant="gallery"
                                 onItemClick={loadGalleryItem}
-                                onImageClick={(item) => setViewerImage(item.imageUrl)}
                                 nsfwMode={nsfwMode}
                                 emptyMessage={t('gallery.noCreations')}
                             />
@@ -121,22 +116,7 @@ function Sidebar({
                 {sidebarContent}
             </aside>
 
-            {/* Lightbox for Gallery */}
-            <Lightbox
-                open={!!viewerImage}
-                close={() => setViewerImage(null)}
-                slides={viewerImage ? [{ src: viewerImage }] : []}
-                plugins={[Zoom]}
-                zoom={{
-                    maxZoomPixelRatio: 3,
-                    scrollToZoom: true,
-                }}
-                controller={{ closeOnBackdropClick: true }}
-                render={{
-                    buttonPrev: () => null,
-                    buttonNext: () => null,
-                }}
-            />
+
         </>
     );
 }

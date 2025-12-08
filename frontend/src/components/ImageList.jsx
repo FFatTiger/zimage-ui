@@ -49,8 +49,8 @@ export default function ImageList({
                         <img
                             src={item.imageUrl}
                             className={cn(
-                                "absolute inset-0 w-full h-full object-cover",
-                                nsfwMode ? 'blur-md hover:blur-none' : ''
+                                "absolute inset-0 w-full h-full object-cover transition-all duration-300",
+                                nsfwMode ? 'blur-md group-hover:blur-none' : ''
                             )}
                             loading="lazy"
                             alt={item.prompt}
