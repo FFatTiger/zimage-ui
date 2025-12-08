@@ -26,7 +26,7 @@ export default function ImageList({
     }
 
     return (
-        <div className="grid grid-cols-2 md:grid-cols-1 gap-3">
+        <div className="grid grid-cols-1 gap-4">
             {items.map((item) => (
                 <div
                     key={item.id}
@@ -36,7 +36,7 @@ export default function ImageList({
                     {/* Image Container */}
                     <div
                         className={cn(
-                            "relative aspect-square w-full",
+                            "relative w-full pb-[100%]",
                             onImageClick ? "cursor-pointer" : ""
                         )}
                         onClick={(e) => {
@@ -49,8 +49,8 @@ export default function ImageList({
                         <img
                             src={item.imageUrl}
                             className={cn(
-                                "w-full h-full object-cover",
-                                nsfwMode ? 'blur-md hover:blur-none transition-filter duration-200' : ''
+                                "absolute inset-0 w-full h-full object-cover",
+                                nsfwMode ? 'blur-md hover:blur-none' : ''
                             )}
                             loading="lazy"
                             alt={item.prompt}
