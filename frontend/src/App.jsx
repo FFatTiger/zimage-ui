@@ -5,7 +5,6 @@ import Controls from './components/Controls';
 import Preview from './components/Preview';
 import QuickInput from './components/QuickInput';
 import UsernameModal from './components/UsernameModal';
-import Gallery from './components/Gallery';
 import MobileHeader from './components/MobileHeader';
 import { useResponsive } from './hooks/useResponsive';
 import { useTheme } from './hooks/useTheme';
@@ -127,33 +126,22 @@ function App() {
             />
 
             {/* Sidebar with tabs */}
-            {activeTab === 'history' ? (
-                <Sidebar
-                    showSidebar={showSidebar}
-                    setShowSidebar={setShowSidebar}
-                    history={history}
-                    loadHistoryItem={loadHistoryItem}
-                    deleteHistoryItem={deleteHistoryItem}
-                    shareToGallery={handleShareToGallery}
-                    onSwitchToGallery={() => setActiveTab('gallery')}
-                    isDarkMode={isDarkMode}
-                    toggleDarkMode={toggleDarkMode}
-                    nsfwMode={nsfwMode}
-                    onToggleNsfwMode={() => setNsfwMode(!nsfwMode)}
-                />
-            ) : (
-                <Gallery
-                    showSidebar={showSidebar}
-                    setShowSidebar={setShowSidebar}
-                    gallery={gallery}
-                    loadGalleryItem={loadHistoryItem}
-                    onSwitchToHistory={() => setActiveTab('history')}
-                    isDarkMode={isDarkMode}
-                    toggleDarkMode={toggleDarkMode}
-                    nsfwMode={nsfwMode}
-                    setNsfwMode={setNsfwMode}
-                />
-            )}
+            <Sidebar
+                showSidebar={showSidebar}
+                setShowSidebar={setShowSidebar}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                history={history}
+                loadHistoryItem={loadHistoryItem}
+                deleteHistoryItem={deleteHistoryItem}
+                shareToGallery={handleShareToGallery}
+                gallery={gallery}
+                loadGalleryItem={loadHistoryItem}
+                isDarkMode={isDarkMode}
+                toggleDarkMode={toggleDarkMode}
+                nsfwMode={nsfwMode}
+                onToggleNsfwMode={() => setNsfwMode(!nsfwMode)}
+            />
 
             {/* Controls */}
             <Controls

@@ -1,23 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { X, Trash2, Clock, Share2, Moon, Sun, Eye, EyeOff } from 'lucide-react';
+import { X, Trash2, Clock, Share2, Moon, Sun, Eye, EyeOff, Users } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import ImageList from './ImageList';
+import Lightbox from 'yet-another-react-lightbox';
+import Zoom from 'yet-another-react-lightbox/plugins/zoom';
+import 'yet-another-react-lightbox/styles.css';
 
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
-export default function Sidebar({ showSidebar, setShowSidebar, history, loadHistoryItem, deleteHistoryItem, shareToGallery, onSwitchToGallery, isDarkMode, toggleDarkMode, nsfwMode, onToggleNsfwMode }) {
+export default function Sidebar({
+    showSidebar, setShowSidebar,
+    activeTab, onTabChange, // Controlled tab state
+    history, loadHistoryItem, deleteHistoryItem, shareToGallery,
+    gallery, loadGalleryItem,
+    isDarkMode, toggleDarkMode, nsfwMode, onToggleNsfwMode
+}) {
     const { t } = useTranslation();
+    const [viewerImage, setViewerImage] = useState(null);
 
     const sidebarContent = (
         <div className="flex flex-col h-full bg-background text-foreground">
             <div className="p-6 border-b bg-background">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold tracking-tight">
-                        {t('sidebar.myCreations')}
+                        {activeTab === 'history' ? t('sidebar.myCreations') : t('gallery.sharedCreations')}
                     </h2>
                     <div className="flex items-center gap-1">
                         <Button
@@ -42,82 +53,46 @@ export default function Sidebar({ showSidebar, setShowSidebar, history, loadHist
                 </div>
 
                 {/* Tab Switcher */}
-                <Tabs defaultValue="history" className="w-full">
+                <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
                     <TabsList className="w-full grid grid-cols-2">
                         <TabsTrigger value="history">{t('sidebar.history')}</TabsTrigger>
-                        <TabsTrigger value="gallery" onClick={onSwitchToGallery}>{t('sidebar.gallery')}</TabsTrigger>
+                        <TabsTrigger value="gallery">{t('sidebar.gallery')}</TabsTrigger>
                     </TabsList>
                 </Tabs>
             </div>
 
             <ScrollArea className="flex-1">
-                <div className="p-4 space-y-4">
-                    {history.length === 0 ? (
-                        <div className="text-center text-muted-foreground mt-10">
-                            <p>{t('sidebar.noHistory')}</p>
-                        </div>
-                    ) : (
-                        history.map((item) => (
-                            <div
-                                key={item.id}
-                                className="group relative bg-card rounded-xl overflow-hidden cursor-pointer border hover:shadow-md transition-all duration-200"
-                                onClick={() => loadHistoryItem(item)}
-                            >
-                                <div className="aspect-square w-full relative overflow-hidden">
-                                    <img
-                                        src={item.imageUrl}
-                                        className={cn(
-                                            "w-full h-full object-cover transition-all",
-                                            nsfwMode ? 'blur-md hover:blur-none' : '',
-                                            "opacity-90 group-hover:opacity-100"
-                                        )}
-                                        loading="lazy"
-                                        alt={item.prompt}
-                                    />
+                <div className="p-4">
+                    {/* History Content */}
+                    {activeTab === 'history' && (
+                        <ImageList
+                            items={history}
+                            variant="history"
+                            onItemClick={loadHistoryItem}
+                            onShare={shareToGallery}
+                            onDelete={deleteHistoryItem}
+                            nsfwMode={nsfwMode}
+                            emptyMessage={t('sidebar.noHistory')}
+                        />
+                    )}
 
-                                    {/* Action Buttons */}
-                                    <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <Button
-                                            variant="secondary"
-                                            size="icon"
-                                            className="h-7 w-7 bg-background/80 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                shareToGallery(item);
-                                            }}
-                                            title="Share to Gallery"
-                                        >
-                                            <Share2 size={14} />
-                                        </Button>
-                                        <Button
-                                            variant="secondary"
-                                            size="icon"
-                                            className="h-7 w-7 bg-background/80 backdrop-blur-sm hover:bg-destructive hover:text-destructive-foreground"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                deleteHistoryItem(item.id);
-                                            }}
-                                            title="Delete"
-                                        >
-                                            <Trash2 size={14} />
-                                        </Button>
-                                    </div>
-
-                                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-3 pt-6">
-                                        <p className="text-xs text-white line-clamp-2 font-medium mb-1.5 drop-shadow-sm">{item.prompt}</p>
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-[10px] text-white/80 flex items-center gap-1">
-                                                <Clock size={10} />
-                                                {item.timestamp}
-                                            </span>
-                                            <Badge variant="secondary" className="text-[10px] h-4 px-1 py-0 bg-white/20 text-white hover:bg-white/30 border-0">
-                                                {item.timeTaken}s
-                                            </Badge>
-                                        </div>
-                                    </div>
+                    {/* Gallery Content */}
+                    {activeTab === 'gallery' && (
+                        <>
+                            <ImageList
+                                items={gallery}
+                                variant="gallery"
+                                onItemClick={loadGalleryItem}
+                                onImageClick={(item) => setViewerImage(item.imageUrl)}
+                                nsfwMode={nsfwMode}
+                                emptyMessage={t('gallery.noCreations')}
+                            />
+                            {gallery.length === 0 && (
+                                <div className="text-center text-muted-foreground -mt-4">
+                                    <p className="text-xs">{t('gallery.shareFromHistory')}</p>
                                 </div>
-                            </div>
-                        ))
+                            )}
+                        </>
                     )}
                 </div>
             </ScrollArea>
@@ -134,9 +109,26 @@ export default function Sidebar({ showSidebar, setShowSidebar, history, loadHist
             </Sheet>
 
             {/* Desktop Sidebar */}
-            <aside className="hidden md:flex w-80 flex-col border-r h-full bg-background">
+            <aside className="hidden md:flex w-80 flex-col border-r h-full bg-background flex-shrink-0">
                 {sidebarContent}
             </aside>
+
+            {/* Lightbox for Gallery */}
+            <Lightbox
+                open={!!viewerImage}
+                close={() => setViewerImage(null)}
+                slides={viewerImage ? [{ src: viewerImage }] : []}
+                plugins={[Zoom]}
+                zoom={{
+                    maxZoomPixelRatio: 3,
+                    scrollToZoom: true,
+                }}
+                controller={{ closeOnBackdropClick: true }}
+                render={{
+                    buttonPrev: () => null,
+                    buttonNext: () => null,
+                }}
+            />
         </>
     );
 }
