@@ -13,15 +13,21 @@ A modern, responsive web interface for ComfyUI image generation workflows, featu
 
 ## Screenshots
 
-````carousel
-![Initial Interface - Clean and simple upload interface](img/PixPin_2025-12-08_17-12-14.png)
-<!-- slide -->
-![Gallery View - Grid layout showcasing multiple images with titles and actions](img/PixPin_2025-12-08_17-13-18.png)
-<!-- slide -->
-![Image Preview - Full-screen image viewer with overlay](img/PixPin_2025-12-08_17-13-51.png)
-<!-- slide -->
-![ComfyUI Integration - Node-based workflow editor for advanced image generation](img/PixPin_2025-12-08_17-14-12.png)
-````
+### Initial Interface
+![Initial Interface](img/01-initial-interface.png)
+*Clean and simple upload interface*
+
+### Gallery View
+![Gallery View](img/02-gallery-view.png)
+*Grid layout showcasing multiple images with titles and actions*
+
+### Image Preview
+![Image Preview](img/03-image-preview.png)
+*Full-screen image viewer with overlay*
+
+### ComfyUI Integration
+![ComfyUI Workflow](img/04-comfyui-workflow.png)
+*Node-based workflow editor for advanced image generation*
 
 ## Setup & Run
 
