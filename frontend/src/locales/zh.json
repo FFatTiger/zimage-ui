@@ -1,0 +1,85 @@
+{
+    "app": {
+        "title": "Z-Image"
+    },
+    "header": {
+        "history": "历史",
+        "gallery": "广场"
+    },
+    "sidebar": {
+        "myCreations": "我的作品",
+        "history": "历史",
+        "gallery": "广场",
+        "noHistory": "暂无历史记录",
+        "shareToGallery": "分享到广场",
+        "delete": "删除"
+    },
+    "gallery": {
+        "sharedCreations": "共享作品",
+        "noCreations": "暂无共享作品",
+        "shareFromHistory": "从历史记录分享你的作品！",
+        "anonymous": "匿名"
+    },
+    "controls": {
+        "positivePrompt": "正向提示词",
+        "negativePrompt": "负向提示词",
+        "aiEnhance": "AI 增强",
+        "enhancing": "增强中...",
+        "resolution": "分辨率",
+        "custom": "自定义",
+        "width": "宽度",
+        "height": "高度",
+        "steps": "步数",
+        "cfgScale": "CFG 比例",
+        "seed": "种子",
+        "randomize": "随机",
+        "generate": "生成作品",
+        "generating": "正在创作...",
+        "promptPlaceholder": "描述你的杰作...",
+        "negativePromptPlaceholder": "要避免的内容...",
+        "fullPromptPlaceholder": "完整提示词详情...",
+        "avoidPlaceholder": "要避免的内容...",
+        "resolutionPresets": {
+            "720p": "720p",
+            "1080p_landscape": "1080p（横屏）",
+            "1080p_portrait": "1080p（竖屏）",
+            "2k": "2K",
+            "4k": "4K",
+            "square512": "方形 512",
+            "square1024": "方形 1024"
+        }
+    },
+    "preview": {
+        "readyToCreate": "准备创作",
+        "configureSettings": "配置设置并点击生成",
+        "useQuickInput": "使用快速输入生成",
+        "download": "下载"
+    },
+    "quickInput": {
+        "quickInput": "快速输入",
+        "enterPrompt": "输入提示词...",
+        "generate": "生成",
+        "negativePrompt": "负向提示词"
+    },
+    "username": {
+        "welcome": "欢迎！",
+        "setDisplayName": "设置你的显示名称",
+        "displayName": "显示名称",
+        "enterName": "输入你的名称...",
+        "description": "此名称将在你分享作品到广场时显示。仅保存在浏览器本地。",
+        "continue": "继续"
+    },
+    "messages": {
+        "enterPrompt": "请输入提示词",
+        "generationFailed": "生成失败",
+        "sharedSuccess": "成功分享到广场！",
+        "shareFailed": "分享到广场失败",
+        "starting": "开始生成...",
+        "processing": "处理中...",
+        "complete": "完成！",
+        "error": "发生错误"
+    },
+    "time": {
+        "seconds": "秒"
+    }
+}

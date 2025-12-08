@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================
+   CLEAN WHITE THEME - BASE SYSTEM
+   ========================================== */
+
+/* Root Background - Simple White */
+body {
+  background: #ffffff;
+  position: relative;
+  overflow-x: hidden;
+  /* Support for mobile safe areas (notches, status bars) */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Remove animated gradients and light spots */
+body::before,
+body::after {
+  display: none;
+}
+
+/* ==========================================
+   CUSTOM SCROLLBAR - Simple Gray
+   ========================================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* ==========================================
+   ACCESSIBILITY
+   ========================================== */
+
+/* Prevent iOS zoom on focus */
+input[type="text"],
+input[type="number"],
+textarea {
+  font-size: 16px !important;
+}

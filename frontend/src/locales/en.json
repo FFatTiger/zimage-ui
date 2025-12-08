@@ -1,0 +1,85 @@
+{
+    "app": {
+        "title": "Z-Image"
+    },
+    "header": {
+        "history": "History",
+        "gallery": "Gallery"
+    },
+    "sidebar": {
+        "myCreations": "My Creations",
+        "history": "History",
+        "gallery": "Gallery",
+        "noHistory": "No history yet",
+        "shareToGallery": "Share to Gallery",
+        "delete": "Delete"
+    },
+    "gallery": {
+        "sharedCreations": "Shared Creations",
+        "noCreations": "No shared creations yet",
+        "shareFromHistory": "Share your work from History!",
+        "anonymous": "Anonymous"
+    },
+    "controls": {
+        "positivePrompt": "Positive Prompt",
+        "negativePrompt": "Negative Prompt",
+        "aiEnhance": "AI Enhance",
+        "enhancing": "Enhancing...",
+        "resolution": "Resolution",
+        "custom": "Custom",
+        "width": "Width",
+        "height": "Height",
+        "steps": "Steps",
+        "cfgScale": "CFG Scale",
+        "seed": "Seed",
+        "randomize": "Randomize",
+        "generate": "Generate Artwork",
+        "generating": "Creating Magic...",
+        "promptPlaceholder": "Describe your masterpiece...",
+        "negativePromptPlaceholder": "What to avoid...",
+        "fullPromptPlaceholder": "Full prompt details...",
+        "avoidPlaceholder": "What to avoid...",
+        "resolutionPresets": {
+            "720p": "720p",
+            "1080p_landscape": "1080p (Landscape)",
+            "1080p_portrait": "1080p (Portrait)",
+            "2k": "2K",
+            "4k": "4K",
+            "square512": "Square 512",
+            "square1024": "Square 1024"
+        }
+    },
+    "preview": {
+        "readyToCreate": "Ready to Create",
+        "configureSettings": "Configure your settings and click Generate",
+        "useQuickInput": "Use quick input to generate",
+        "download": "Download"
+    },
+    "quickInput": {
+        "quickInput": "Quick Input",
+        "enterPrompt": "Enter prompt...",
+        "generate": "Generate",
+        "negativePrompt": "Negative Prompt"
+    },
+    "username": {
+        "welcome": "Welcome!",
+        "setDisplayName": "Set your display name",
+        "displayName": "Display Name",
+        "enterName": "Enter your name...",
+        "description": "This name will be shown when you share creations to the gallery. It's stored locally in your browser only.",
+        "continue": "Continue"
+    },
+    "messages": {
+        "enterPrompt": "Please enter a prompt",
+        "generationFailed": "Generation failed",
+        "sharedSuccess": "Successfully shared to gallery!",
+        "shareFailed": "Failed to share to gallery",
+        "starting": "Starting generation...",
+        "processing": "Processing...",
+        "complete": "Complete!",
+        "error": "Error occurred"
+    },
+    "time": {
+        "seconds": "s"
+    }
+}

@@ -1,0 +1,261 @@
+{
+  "6": {
+    "inputs": {
+      "width": 768,
+      "height": 1024,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "空Latent图像"
+    }
+  },
+  "7": {
+    "inputs": {
+      "samples": [
+        "158",
+        0
+      ],
+      "vae": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE解码"
+    }
+  },
+  "8": {
+    "inputs": {
+      "vae_name": "z-image-qwen.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "加载VAE"
+    }
+  },
+  "55": {
+    "inputs": {
+      "unet_name": "z-image\\z_image_turbo_bf16.safetensors",
+      "weight_dtype": "default"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "UNet加载器"
+    }
+  },
+  "107": {
+    "inputs": {
+      "lora_01": "None",
+      "strength_01": 0.9,
+      "lora_02": "None",
+      "strength_02": 0.8,
+      "lora_03": "None",
+      "strength_03": 0.5,
+      "lora_04": "None",
+      "strength_04": 1,
+      "model": [
+        "55",
+        0
+      ],
+      "clip": [
+        "148",
+        0
+      ]
+    },
+    "class_type": "Lora Loader Stack (rgthree)",
+    "_meta": {
+      "title": "LoRA堆加载器"
+    }
+  },
+  "108": {
+    "inputs": {
+      "filename_prefix": "ComfyUI-ctrl",
+      "images": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "保存图像"
+    }
+  },
+  "125": {
+    "inputs": {
+      "seed": 253147775541464,
+      "steps": 10,
+      "cfg": 1,
+      "sampler_name": "res_multistep",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": [
+        "157",
+        0
+      ],
+      "positive": [
+        "149",
+        0
+      ],
+      "negative": [
+        "126",
+        0
+      ],
+      "latent_image": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "K采样器"
+    }
+  },
+  "126": {
+    "inputs": {
+      "conditioning": [
+        "149",
+        0
+      ]
+    },
+    "class_type": "ConditioningZeroOut",
+    "_meta": {
+      "title": "条件零化"
+    }
+  },
+  "143": {
+    "inputs": {
+      "lora_01": "None",
+      "strength_01": 0.8,
+      "lora_02": "None",
+      "strength_02": 0.8,
+      "lora_03": "None",
+      "strength_03": 0.5,
+      "lora_04": "None",
+      "strength_04": 1,
+      "model": [
+        "107",
+        0
+      ],
+      "clip": [
+        "107",
+        1
+      ]
+    },
+    "class_type": "Lora Loader Stack (rgthree)",
+    "_meta": {
+      "title": "LoRA堆加载器"
+    }
+  },
+  "145": {
+    "inputs": {
+      "image": "ben_00068_.png"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "加载图像"
+    }
+  },
+  "148": {
+    "inputs": {
+      "clip_name": "z-image\\qwen_3_4b.safetensors",
+      "type": "qwen_image",
+      "device": "default"
+    },
+    "class_type": "CLIPLoader",
+    "_meta": {
+      "title": "加载CLIP"
+    }
+  },
+  "149": {
+    "inputs": {
+      "text": "ben_nd,这是一幅描绘一位年轻女性的插画作品。她 穿着一件紫色和白色相间的连帽衫以及深蓝色的运动裤。她的脖子上围着一条黑色的围巾，脚上穿着一双黑色的高帮鞋。 背景是纯白色的，突出了人物的轮廓和服装的颜色。整体风格偏向于现代简约风，色彩搭配和谐且具有视觉冲击力。光线从左侧照射过来，使得人物的脸部和身体右侧呈现出柔和的光泽感。",
+      "clip": [
+        "143",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP文本编码"
+    }
+  },
+  "155": {
+    "inputs": {
+      "name": "Z-Image-Turbo-Fun-Controlnet-Union.safetensors"
+    },
+    "class_type": "ModelPatchLoader",
+    "_meta": {
+      "title": "ModelPatchLoader"
+    }
+  },
+  "156": {
+    "inputs": {
+      "strength": 1,
+      "model": [
+        "143",
+        0
+      ],
+      "model_patch": [
+        "155",
+        0
+      ],
+      "vae": [
+        "8",
+        0
+      ],
+      "image": [
+        "145",
+        0
+      ]
+    },
+    "class_type": "QwenImageDiffsynthControlnet",
+    "_meta": {
+      "title": "QwenImageDiffsynthControlnet"
+    }
+  },
+  "157": {
+    "inputs": {
+      "shift": 3,
+      "model": [
+        "156",
+        0
+      ]
+    },
+    "class_type": "ModelSamplingAuraFlow",
+    "_meta": {
+      "title": "采样算法（AuraFlow）"
+    }
+  },
+  "158": {
+    "inputs": {
+      "seed": 359451499508669,
+      "steps": 8,
+      "cfg": 1,
+      "sampler_name": "euler",
+      "scheduler": "ddim_uniform",
+      "denoise": 0.5,
+      "model": [
+        "143",
+        0
+      ],
+      "positive": [
+        "149",
+        0
+      ],
+      "negative": [
+        "126",
+        0
+      ],
+      "latent_image": [
+        "125",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "K采样器"
+    }
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "8": {
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "17",
+        0
+      ]
+    },
+    "class_type": "VAEDecode"
+  },
+  "9": {
+    "inputs": {
+      "images": [
+        "8",
+        0
+      ],
+      "filename_prefix": "ComfyUI"
+    },
+    "class_type": "SaveImage"
+  },
+  "17": {
+    "inputs": {
+      "vae_name": "ae.safetensors"
+    },
+    "class_type": "VAELoader"
+  },
+  "13": {
+    "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "batch_size": 1
+    },
+    "class_type": "EmptySD3LatentImage"
+  },
+  "16": {
+    "inputs": {
+      "unet_name": "z_image_turbo_bf16.safetensors",
+      "weight_dtype": "default"
+    },
+    "class_type": "UNETLoader"
+  },
+  "11": {
+    "inputs": {
+      "model": [
+        "16",
+        0
+      ],
+      "shift": 3
+    },
+    "class_type": "ModelSamplingAuraFlow"
+  },
+  "3": {
+    "inputs": {
+      "model": [
+        "11",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "13",
+        0
+      ],
+      "seed": 298955781164206,
+      "steps": 9,
+      "cfg": 1,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1
+    },
+    "class_type": "KSampler"
+  },
+  "18": {
+    "inputs": {
+      "clip_name": "qwen_3_4b.safetensors",
+      "type": "lumina2"
+    },
+    "class_type": "CLIPLoader"
+  },
+  "7": {
+    "inputs": {
+      "clip": [
+        "18",
+        0
+      ],
+      "text": "blurry ugly bad"
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "6": {
+    "inputs": {
+      "clip": [
+        "18",
+        0
+      ],
+      "text": "A highly detailed, photorealistic close-up portrait of a young woman in her early 20s with pale skin, slim athletic build, small waist, and medium-sized natural breasts with small pink nipples. She has wet black hair slicked back, subtle makeup, and a serene expression with eyes cast downward. Her skin is glistening with water droplets or oil, giving a shiny, wet look. She is gently pulling down a soaked white tank top that's clinging to her body, partially exposing her upper torso. The background is dark and moody, with soft cinematic lighting highlighting her curves and contours. High resolution, 8k, realistic rendering, sharp focus, intricate details on skin texture and fabric. Style inspired by professional erotic photography, no clothing below the waist visible, intimate and sensual atmosphere. \u9ad8\u5706\u5706 \n face"
+    },
+    "class_type": "CLIPTextEncode"
+  }
+}
