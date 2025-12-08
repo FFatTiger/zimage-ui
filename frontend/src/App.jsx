@@ -109,7 +109,7 @@ function App() {
     }, [isMobile]);
 
     return (
-        <div className="h-full flex flex-col lg:flex-row overflow-hidden bg-white dark:bg-dark-900 pt-[72px] lg:pt-0">
+        <div className="h-full flex flex-col lg:flex-row overflow-hidden bg-background text-foreground pt-[72px] lg:pt-0">
             {/* Username Modal */}
             {showUsernameModal && (
                 <UsernameModal onSave={handleUsernameSave} />

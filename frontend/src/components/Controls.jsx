@@ -72,20 +72,20 @@ export default function Controls({ showControls, params, setParams, randomizeSee
 
     return (
         <div
-            className={`w-full lg:w-[400px] xl:w-[450px] bg-white dark:bg-dark-800 border-r border-gray-200 dark:border-dark-700 overflow-hidden order-1 lg:order-1 transition-all duration-300 flex flex-col fixed lg:relative bottom-0 lg:bottom-auto left-0 right-0 z-50 lg:z-10 rounded-t-3xl lg:rounded-none shadow-lg lg:shadow-none max-h-[60vh] lg:max-h-none ${showControls ? 'translate-y-full lg:translate-y-0' : 'translate-y-full lg:translate-y-0'
+            className={`w-full lg:w-[400px] xl:w-[450px] bg-background border-r border-border overflow-hidden order-1 lg:order-1 transition-all duration-300 flex flex-col fixed lg:relative bottom-0 lg:bottom-auto left-0 right-0 z-50 lg:z-10 rounded-t-3xl lg:rounded-none shadow-lg lg:shadow-none max-h-[60vh] lg:max-h-none ${showControls ? 'translate-y-full lg:translate-y-0' : 'translate-y-full lg:translate-y-0'
                 }`}
         >
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
                 {/* Prompt */}
                 <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">{t('controls.positivePrompt')}</label>
+                        <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">{t('controls.positivePrompt')}</label>
                         <button
                             onClick={handleEnhance}
                             disabled={!params.prompt || isEnhancing}
                             className={`flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs font-medium transition-all ${isEnhancing
-                                ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 animate-pulse'
-                                : 'bg-purple-50 dark:bg-purple-900/10 text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/20'
+                                ? 'bg-purple-100 text-purple-600 animate-pulse'
+                                : 'bg-purple-50 text-purple-600 hover:bg-purple-100'
                                 }`}
                         >
                             <Sparkles size={12} className={isEnhancing ? 'animate-spin' : ''} />
@@ -97,35 +97,35 @@ export default function Controls({ showControls, params, setParams, randomizeSee
                         value={params.prompt}
                         onChange={handleChange}
                         rows="4"
-                        className="w-full bg-gray-50 dark:bg-dark-900 border border-gray-300 dark:border-dark-700 rounded-xl p-3 text-sm text-gray-900 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none placeholder-gray-400 dark:placeholder-gray-500"
+                        className="w-full bg-muted/50 border border-input rounded-xl p-3 text-sm text-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none placeholder:text-muted-foreground"
                         placeholder={t('controls.promptPlaceholder')}
                     ></textarea>
                 </div>
 
                 {/* Negative Prompt */}
                 <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">{t('controls.negativePrompt')}</label>
+                    <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">{t('controls.negativePrompt')}</label>
                     <textarea
                         name="negative_prompt"
                         value={params.negative_prompt}
                         onChange={handleChange}
                         rows="2"
-                        className="w-full bg-gray-50 dark:bg-dark-900 border border-gray-300 dark:border-dark-700 rounded-xl p-3 text-sm text-gray-900 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none placeholder-gray-400 dark:placeholder-gray-500"
+                        className="w-full bg-muted/50 border border-input rounded-xl p-3 text-sm text-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none placeholder:text-muted-foreground"
                         placeholder={t('controls.negativePromptPlaceholder')}
                     ></textarea>
                 </div>
 
                 {/* Resolution Presets */}
                 <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">{t('controls.resolution')}</label>
+                    <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">{t('controls.resolution')}</label>
                     <div className="grid grid-cols-3 gap-2">
                         {RESOLUTION_PRESETS.map((preset) => (
                             <button
                                 key={preset.key}
                                 onClick={() => handleResolutionChange(preset)}
                                 className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${currentPreset?.name === preset.name
-                                    ? 'bg-primary text-white shadow-md'
-                                    : 'bg-gray-100 dark:bg-dark-900 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-dark-700'
+                                    ? 'bg-primary text-primary-foreground shadow-md'
+                                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
                                     }`}
                             >
                                 <div className="font-bold">{t(`controls.resolutionPresets.${preset.key}`)}</div>
@@ -135,38 +135,37 @@ export default function Controls({ showControls, params, setParams, randomizeSee
                     </div>
                     {/* Show custom resolution if not matching presets */}
                     {!currentPreset && (
-                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        <div className="text-xs text-muted-foreground mt-1">
                             {t('controls.custom')}: {params.width}×{params.height}
                         </div>
                     )}
                 </div>
 
                 {/* Other Settings Grid */}
-                {/* Other Settings Grid */}
                 <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                        <label className="text-xs text-gray-600 dark:text-gray-400">{t('controls.steps')}</label>
+                        <label className="text-xs text-muted-foreground">{t('controls.steps')}</label>
                         <input
                             type="number"
                             name="steps"
                             value={params.steps}
                             onChange={handleChange}
-                            className="w-full bg-gray-50 dark:bg-dark-900 border border-gray-300 dark:border-dark-700 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                            className="w-full bg-muted/50 border border-input rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:border-primary outline-none"
                         />
                     </div>
                     <div className="space-y-1">
-                        <label className="text-xs text-gray-600 dark:text-gray-400">{t('controls.cfgScale')}</label>
+                        <label className="text-xs text-muted-foreground">{t('controls.cfgScale')}</label>
                         <input
                             type="number"
                             name="cfg"
                             value={params.cfg}
                             onChange={handleChange}
                             step="0.1"
-                            className="w-full bg-gray-50 dark:bg-dark-900 border border-gray-300 dark:border-dark-700 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                            className="w-full bg-muted/50 border border-input rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:border-primary outline-none"
                         />
                     </div>
                     <div className="space-y-1 col-span-2">
-                        <label className="text-xs text-gray-600 dark:text-gray-400 flex justify-between">
+                        <label className="text-xs text-muted-foreground flex justify-between">
                             <span>{t('controls.seed')}</span>
                             <button
                                 onClick={randomizeSeed}
@@ -182,7 +181,7 @@ export default function Controls({ showControls, params, setParams, randomizeSee
                                 name="seed"
                                 value={params.seed}
                                 onChange={handleChange}
-                                className="w-full bg-gray-50 dark:bg-dark-900 border border-gray-300 dark:border-dark-700 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                                className="w-full bg-muted/50 border border-input rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:border-primary outline-none"
                             />
                         </div>
                     </div>
@@ -192,7 +191,7 @@ export default function Controls({ showControls, params, setParams, randomizeSee
                 <button
                     onClick={generate}
                     disabled={isGenerating}
-                    className="w-full py-4 rounded-xl font-bold text-white bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-95 transition-all mt-4"
+                    className="w-full py-4 rounded-xl font-bold text-primary-foreground bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-95 transition-all mt-4"
                 >
                     {isGenerating ? t('controls.generating') : t('controls.generate')}
                 </button>

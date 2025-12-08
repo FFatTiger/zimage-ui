@@ -5,16 +5,18 @@ import { useState, useEffect } from 'react';
  * @returns {[isDarkMode, toggleDarkMode]} - dark mode state and toggle function
  */
 export function useTheme() {
-    const [isDarkMode, setIsDarkMode] = useState(false);
+    const [isDarkMode, setIsDarkMode] = useState(() => {
+        return localStorage.getItem('darkMode') === 'true';
+    });
 
-    // Initialize dark mode from localStorage
+    // Apply theme on mount and when state changes
     useEffect(() => {
-        const darkMode = localStorage.getItem('darkMode') === 'true';
-        setIsDarkMode(darkMode);
-        if (darkMode) {
+        if (isDarkMode) {
             document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
         }
-    }, []);
+    }, [isDarkMode]);
 
     const toggleDarkMode = () => {
         setIsDarkMode(prev => {
