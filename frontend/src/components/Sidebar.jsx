@@ -103,7 +103,11 @@ export default function Sidebar({
         <>
             {/* Mobile Sheet */}
             <Sheet open={showSidebar} onOpenChange={setShowSidebar}>
-                <SheetContent side="left" className="p-0 w-full sm:w-80 border-r-0">
+                <SheetContent
+                    side="left"
+                    className="p-0 border-r-0"
+                    style={{ width: 'min(calc(100vw - 48px), 320px)' }}
+                >
                     {sidebarContent}
                 </SheetContent>
             </Sheet>
