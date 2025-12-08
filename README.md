@@ -11,6 +11,18 @@ A modern, responsive web interface for ComfyUI image generation workflows, featu
 *   **Real-time Progress**: WebSocket integration for real-time generation progress and status updates.
 *   **NSFW Mode**: Built-in blurring for sensitive content.
 
+## Screenshots
+
+````carousel
+![Initial Interface - Clean and simple upload interface](img/PixPin_2025-12-08_17-12-14.png)
+<!-- slide -->
+![Gallery View - Grid layout showcasing multiple images with titles and actions](img/PixPin_2025-12-08_17-13-18.png)
+<!-- slide -->
+![Image Preview - Full-screen image viewer with overlay](img/PixPin_2025-12-08_17-13-51.png)
+<!-- slide -->
+![ComfyUI Integration - Node-based workflow editor for advanced image generation](img/PixPin_2025-12-08_17-14-12.png)
+````
+
 ## Setup & Run
 
 ### Prerequisites
