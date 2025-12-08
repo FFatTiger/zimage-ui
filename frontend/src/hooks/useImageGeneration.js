@@ -42,6 +42,10 @@ export function useImageGeneration() {
 
     // WebSocket connection
     const connectWebSocket = useCallback(() => {
+        if (wsRef.current) {
+            wsRef.current.close();
+        }
+
         const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
         const wsUrl = `${wsProtocol}//${window.location.host}/ws/${clientIdRef.current}`;
 
@@ -126,8 +130,9 @@ export function useImageGeneration() {
 
             // Poll for completion
             let attempts = 0;
-            const maxAttempts = 120; // 2 minutes timeout
+            const maxAttempts = 300; // 5 minutes timeout
             let executionSignalResolver = null;
+            let isSignalResolved = false; // Flag to track if signal has triggered
             const executionSignal = new Promise(resolve => {
                 executionSignalResolver = resolve;
             });
@@ -141,19 +146,56 @@ export function useImageGeneration() {
 
             // Loop that checks either timer or execution signal
             while (attempts < maxAttempts) {
-                // Check if we should check immediately due to signal
-                const signalReceived = await Promise.race([
-                    new Promise(resolve => setTimeout(() => resolve(false), 1000)),
-                    executionSignal
-                ]);
+                let shouldCheckHistory = false;
 
-                const historyResponse = await fetch(`/api/history/${promptId}`);
-                if (!historyResponse.ok) {
+                // Check if we should check immediately due to signal
+                if (!isSignalResolved) {
+                    // Check if WS is CONNECTING (0) or OPEN (1)
+                    // We trust WS if it's not closing/closed
+                    const isWsActive = wsRef.current && wsRef.current.readyState < 2;
+
+                    if (isWsActive) {
+                        const signalReceived = await Promise.race([
+                            new Promise(resolve => setTimeout(() => resolve(false), 1000)),
+                            executionSignal
+                        ]);
+                        if (signalReceived) {
+                            isSignalResolved = true;
+                            shouldCheckHistory = true;
+                        }
+                        // If no signal and WS is open, we do nothing (shouldCheckHistory remains false)
+                        // This prevents polling while generating
+                    } else {
+                        // Fallback: If WS is not open, we must poll
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        shouldCheckHistory = true;
+                    }
+                } else {
+                    // Signal already received but result not found yet (race condition).
+                    // Wait 1s to avoid busy-looping and exhausting attempts instantly.
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    shouldCheckHistory = true;
+                }
+
+                if (!shouldCheckHistory) {
                     attempts++;
                     continue;
                 }
 
-                const historyData = await historyResponse.json();
+                let historyData;
+                try {
+                    const historyResponse = await fetch(`/api/history/${promptId}`);
+                    if (!historyResponse.ok) {
+                        attempts++;
+                        continue;
+                    }
+                    historyData = await historyResponse.json();
+                } catch (fetchError) {
+                    console.warn('Fetch history failed, retrying:', fetchError);
+                    attempts++;
+                    continue;
+                }
+
                 const promptData = historyData[promptId];
 
                 if (promptData && promptData.outputs) {

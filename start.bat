@@ -8,7 +8,9 @@ if %errorlevel% neq 0 (
     exit /b %errorlevel%
 )
 cd ..
-
+cd venv
+call Scripts\activate.bat
+cd ..
 echo Starting Backend...
 uvicorn main:app --host 0.0.0.0 --port 8080 --workers 4
 pause
