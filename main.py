@@ -24,7 +24,23 @@ def load_config():
         "COMFY_URL": "http://127.0.0.1:8188",
         "WS_URL": "ws://127.0.0.1:8188",
         "DEEPSEEK_API_URL": "https://api.deepseek.com/chat/completions",
-        "DEEPSEEK_API_KEY": ""
+        "DEEPSEEK_API_KEY": "",
+        "MODELS": {
+            "unet": "z_image_turbo_bf16.safetensors",
+            "vae": "ae.safetensors",
+            "clip": "qwen_3_4b.safetensors",
+            "clip_type": "lumina2"
+        },
+        "DEFAULT_PARAMS": {
+            "steps": 9,
+            "cfg": 1.0,
+            "sampler_name": "euler",
+            "scheduler": "simple",
+            "width": 1024,
+            "height": 1024,
+            "denoise": 1.0,
+            "shift": 3
+        }
     }
     
     # Load from config.json if exists
@@ -33,15 +49,21 @@ def load_config():
         try:
             with open(config_file, "r", encoding="utf-8") as f:
                 file_config = json.load(f)
-                config.update(file_config)
+                # Deep merge for nested dictionaries
+                for key, value in file_config.items():
+                    if key in config and isinstance(config[key], dict) and isinstance(value, dict):
+                        config[key].update(value)
+                    else:
+                        config[key] = value
         except Exception as e:
             print(f"Error loading config.json: {e}")
 
-    # Environment variables override config
+    # Environment variables override config (only for top-level string values)
     for key in config:
-        env_val = os.getenv(key)
-        if env_val:
-            config[key] = env_val
+        if not isinstance(config[key], dict):
+            env_val = os.getenv(key)
+            if env_val:
+                config[key] = env_val
             
     return config
 
@@ -196,6 +218,9 @@ async def generate_img2img(req: Img2ImgRequest):
     workflow = json.loads(json.dumps(WORKFLOW_IMG2IMG_TEMPLATE)) # Deep copy
     client_id = req.client_id
     
+    # Apply model configuration from config
+    workflow = apply_model_config(workflow)
+    
     # 1. Update Load Image (Node 145)
     if "145" in workflow:
         workflow["145"]["inputs"]["image"] = req.input_image_name
@@ -246,6 +271,35 @@ async def generate_img2img(req: Img2ImgRequest):
     return {"prompt_id": result["prompt_id"], "client_id": client_id}
 
 
+# Helper function to apply model config to workflow
+def apply_model_config(workflow: dict) -> dict:
+    """Apply model configuration from CONFIG to workflow"""
+    models = CONFIG.get("MODELS", {})
+    
+    # Update model loaders based on class_type
+    for node_id, node in workflow.items():
+        class_type = node.get("class_type")
+        
+        if class_type == "UNETLoader" and "unet" in models:
+            node["inputs"]["unet_name"] = models["unet"]
+        
+        elif class_type == "VAELoader" and "vae" in models:
+            node["inputs"]["vae_name"] = models["vae"]
+        
+        elif class_type == "CLIPLoader":
+            if "clip" in models:
+                node["inputs"]["clip_name"] = models["clip"]
+            if "clip_type" in models:
+                node["inputs"]["type"] = models["clip_type"]
+        
+        elif class_type == "ModelSamplingAuraFlow":
+            default_params = CONFIG.get("DEFAULT_PARAMS", {})
+            if "shift" in default_params:
+                node["inputs"]["shift"] = default_params["shift"]
+    
+    return workflow
+
+
 @app.post("/api/generate")
 async def generate(req: GenerateRequest):
     if not WORKFLOW_TEMPLATE:
@@ -253,6 +307,9 @@ async def generate(req: GenerateRequest):
 
     workflow = json.loads(json.dumps(WORKFLOW_TEMPLATE)) # Deep copy
     client_id = req.client_id
+    
+    # Apply model configuration from config
+    workflow = apply_model_config(workflow)
 
     # Update nodes
     for node_id, node in workflow.items():

@@ -54,14 +54,73 @@ A modern, responsive web interface for ComfyUI image generation workflows, featu
     pip install -r requirements.txt
     ```
 
-3.  Configure Environment
-    Copy usage of `.env`:
+3.  配置应用
+
+    **方式一：使用 config.json（推荐）**
+    ```bash
+    # 复制配置示例
+    cp config.example.json config.json
+    # 或使用提供的脚本
+    python setup_config.py
+    ```
+    
+    然后编辑 `config.json`：
+    ```json
+    {
+      "COMFY_URL": "http://127.0.0.1:8188",
+      "WS_URL": "ws://127.0.0.1:8188",
+      "DEEPSEEK_API_URL": "https://api.deepseek.com/chat/completions",
+      "DEEPSEEK_API_KEY": "your_api_key_here",
+      "MODELS": {
+        "unet": "z_image_turbo_bf16.safetensors",
+        "vae": "ae.safetensors",
+        "clip": "qwen_3_4b.safetensors",
+        "clip_type": "lumina2"
+      },
+      "DEFAULT_PARAMS": {
+        "steps": 9,
+        "cfg": 1.0,
+        "sampler_name": "euler",
+        "scheduler": "simple",
+        "width": 1024,
+        "height": 1024,
+        "denoise": 1.0,
+        "shift": 3
+      }
+    }
+    ```
+    
+    **方式二：使用环境变量**
     ```bash
     # Create a .env file
     echo "COMFY_URL=http://127.0.0.1:8188" >> .env
     echo "WS_URL=ws://127.0.0.1:8188" >> .env
     echo "DEEPSEEK_API_KEY=your_api_key_here" >> .env
     ```
+
+### 配置说明
+
+#### 基础配置
+- `COMFY_URL`: ComfyUI HTTP 服务地址
+- `WS_URL`: ComfyUI WebSocket 地址
+- `DEEPSEEK_API_KEY`: DeepSeek API 密钥（提示词增强功能）
+
+#### 模型配置（MODELS）
+通过配置文件灵活切换模型，无需修改代码：
+- `unet`: 主图像生成模型（默认: z_image_turbo_bf16.safetensors）
+- `vae`: VAE 编码/解码模型（默认: ae.safetensors）
+- `clip`: 文本编码模型（默认: qwen_3_4b.safetensors）
+- `clip_type`: CLIP 模型类型（默认: lumina2）
+
+#### 默认参数（DEFAULT_PARAMS）
+- `steps`: 采样步数（影响质量与速度）
+- `cfg`: CFG Scale 引导强度
+- `sampler_name`: 采样器名称
+- `scheduler`: 调度器类型
+- `width/height`: 图像尺寸
+- `denoise`: 去噪强度
+- `shift`: ModelSamplingAuraFlow 参数
+
 
 ### Running
 
