@@ -64,4 +64,4 @@ function MobileHeader({ activeTab, onToggleSidebar, isDarkMode, onToggleDarkMode
     );
 }
 
-export default MobileHeader;
+export default React.memo(MobileHeader);

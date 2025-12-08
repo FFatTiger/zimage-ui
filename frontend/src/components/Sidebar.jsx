@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { X, Trash2, Clock, Share2, Moon, Sun, Eye, EyeOff, Users } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import 'yet-another-react-lightbox/styles.css';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
-export default function Sidebar({
+function Sidebar({
     showSidebar, setShowSidebar,
     activeTab, onTabChange, // Controlled tab state
     history, loadHistoryItem, deleteHistoryItem, shareToGallery,
@@ -22,6 +22,10 @@ export default function Sidebar({
 }) {
     const { t } = useTranslation();
     const [viewerImage, setViewerImage] = useState(null);
+
+    const handleOpenChange = useCallback((open) => {
+        setShowSidebar(open);
+    }, [setShowSidebar]);
 
     const sidebarContent = (
         <div className="flex flex-col h-full bg-background text-foreground">
@@ -102,7 +106,7 @@ export default function Sidebar({
     return (
         <>
             {/* Mobile Sheet */}
-            <Sheet open={showSidebar} onOpenChange={setShowSidebar}>
+            <Sheet open={showSidebar} onOpenChange={handleOpenChange} modal={false}>
                 <SheetContent
                     side="left"
                     className="p-0 border-r-0"
@@ -136,3 +140,5 @@ export default function Sidebar({
         </>
     );
 }
+
+export default React.memo(Sidebar);

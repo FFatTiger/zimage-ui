@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import Sidebar from './components/Sidebar';
 import Controls from './components/Controls';
@@ -45,18 +45,18 @@ function App() {
     });
 
     // Handle username save
-    const handleUsernameSave = (name) => {
+    const handleUsernameSave = useCallback((name) => {
         setUsername(name);
         setShowUsernameModal(false);
-    };
+    }, [setUsername]);
 
     // Share to gallery wrapper
-    const handleShareToGallery = async (historyItem) => {
+    const handleShareToGallery = useCallback(async (historyItem) => {
         await shareToGallery(historyItem, username, t);
-    };
+    }, [shareToGallery, username, t]);
 
     // Generate function wrapper
-    const handleGenerate = async () => {
+    const handleGenerate = useCallback(async () => {
         const result = await generate(params, t);
         if (result) {
             // Add to history
@@ -76,17 +76,17 @@ function App() {
         if (isMobile) {
             setShowControls(false);
         }
-    };
+    }, [generate, params, t, addToHistory, isMobile]);
 
-    const quickGenerate = () => {
+    const quickGenerate = useCallback(() => {
         handleGenerate();
-    };
+    }, [handleGenerate]);
 
-    const randomizeSeed = () => {
+    const randomizeSeed = useCallback(() => {
         setParams(prev => ({ ...prev, seed: Math.floor(Math.random() * 1000000) }));
-    };
+    }, []);
 
-    const loadHistoryItem = (item) => {
+    const loadHistoryItem = useCallback((item) => {
         setParams({
             prompt: item.prompt,
             negative_prompt: item.negative_prompt,
@@ -97,7 +97,15 @@ function App() {
         if (isMobile) {
             setShowSidebar(false);
         }
-    };
+    }, [isMobile, setCurrentImage]);
+
+    const handleToggleSidebar = useCallback(() => {
+        setShowSidebar(prev => !prev);
+    }, []);
+
+    const handleToggleNsfwMode = useCallback(() => {
+        setNsfwMode(prev => !prev);
+    }, []);
 
     // Close sidebar/controls when switching from mobile to desktop
     React.useEffect(() => {
@@ -118,11 +126,11 @@ function App() {
             <MobileHeader
                 activeTab={activeTab}
                 showSidebar={showSidebar}
-                onToggleSidebar={() => setShowSidebar(!showSidebar)}
+                onToggleSidebar={handleToggleSidebar}
                 isDarkMode={isDarkMode}
                 onToggleDarkMode={toggleDarkMode}
                 nsfwMode={nsfwMode}
-                onToggleNsfwMode={() => setNsfwMode(!nsfwMode)}
+                onToggleNsfwMode={handleToggleNsfwMode}
             />
 
             {/* Sidebar with tabs */}
@@ -140,7 +148,7 @@ function App() {
                 isDarkMode={isDarkMode}
                 toggleDarkMode={toggleDarkMode}
                 nsfwMode={nsfwMode}
-                onToggleNsfwMode={() => setNsfwMode(!nsfwMode)}
+                onToggleNsfwMode={handleToggleNsfwMode}
             />
 
             {/* Controls */}
