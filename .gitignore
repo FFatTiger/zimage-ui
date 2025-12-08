@@ -112,4 +112,3 @@ desktop.ini
 *.log
 logs/
 .env
-config.json
