@@ -344,7 +344,8 @@ async def view_image(filename: str, subfolder: str = "", type: str = "output"):
             if resp.status != 200:
                 raise HTTPException(status_code=resp.status, detail="Image not found")
             content = await resp.read()
-            return StreamingResponse(iter([content]), media_type=resp.headers.get("Content-Type", "image/png"))
+            headers = {"Cache-Control": "public, max-age=31536000, immutable"}
+            return StreamingResponse(iter([content]), media_type=resp.headers.get("Content-Type", "image/png"), headers=headers)
 
 @app.post("/api/gallery/share")
 async def share_to_gallery(req: GalleryShareRequest):
