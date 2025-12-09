@@ -1,8 +1,11 @@
 {
-    "COMFY_URL": "https://cf.huu.im",
-    "WS_URL": "wss://cf.huu.im",
+    "COMFY_URL": "http://127.0.0.1:8188",
+    "WS_URL": "ws://127.0.0.1:8188",
     "DEEPSEEK_API_URL": "https://api.deepseek.com/chat/completions",
     "DEEPSEEK_API_KEY": "",
+    "ADMIN_USERNAMES": [
+        "admin"
+    ],
     "MODELS": {
         "unet": "z_image_turbo_bf16.safetensors",
         "vae": "ae.safetensors",

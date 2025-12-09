@@ -7,7 +7,7 @@ interface Config {
     WS_URL: string;
     DEEPSEEK_API_URL: string;
     DEEPSEEK_API_KEY: string;
-    ADMIN_PATH: string;
+    ADMIN_USERNAMES: string[];
     MODELS: {
         unet: string;
         vae: string;

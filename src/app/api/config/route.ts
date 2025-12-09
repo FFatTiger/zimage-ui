@@ -7,7 +7,7 @@ export async function GET() {
 
         // 仅返回客户端需要的配置信息
         return NextResponse.json({
-            ADMIN_PATH: (config as any).ADMIN_PATH || '/admin'
+            ADMIN_USERNAMES: (config as any).ADMIN_USERNAMES || []
         });
     } catch (error) {
         console.error('Error loading config:', error);

@@ -30,8 +30,8 @@ function App() {
     const { gallery, shareToGallery } = (useGallery() as any);
     const { isGenerating, progress, statusText, currentImage, lastTimeTaken, elapsedTime, setCurrentImage, generate } = (useImageGeneration() as any);
 
-    // 管理员模式相关
-    const { isAdminMode } = (require('@/hooks/useAdminMode').useAdminMode() as any);
+    // 管理员模式相关（传入用户名）
+    const { isAdminMode } = (require('@/hooks/useAdminMode').useAdminMode(username) as any);
     const { allHistory, fetchAllHistory } = (require('@/hooks/useAllHistory').useAllHistory() as any);
     const { syncStatus } = (require('@/hooks/useSyncHistory').useSyncHistory(username) as any);
 
