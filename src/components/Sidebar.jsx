@@ -15,7 +15,7 @@ function Sidebar({
     showSidebar, setShowSidebar,
     activeTab, onTabChange, // Controlled tab state
     history, loadHistoryItem, deleteHistoryItem, shareToGallery,
-    gallery, loadGalleryItem,
+    gallery, loadGalleryItem, deleteGalleryItem,
     allHistory, loadAllHistoryItem, // 管理员视图
     isAdminMode, // 是否为管理员模式
     isDarkMode, toggleDarkMode, nsfwMode, onToggleNsfwMode
@@ -93,6 +93,7 @@ function Sidebar({
                                 items={gallery}
                                 variant="gallery"
                                 onItemClick={loadGalleryItem}
+                                onDelete={isAdminMode ? deleteGalleryItem : undefined}
                                 nsfwMode={nsfwMode}
                                 emptyMessage={t('gallery.noCreations')}
                             />

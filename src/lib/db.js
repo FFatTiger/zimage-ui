@@ -405,6 +405,14 @@ class HistoryDB {
             original_username: row.username // Keep track of who originally generated it
         }));
     }
+
+    /**
+     * 从画廊删除
+     */
+    deleteFromGallery(galleryId) {
+        const stmt = this.db.prepare('DELETE FROM gallery WHERE id = ?');
+        return stmt.run(galleryId);
+    }
 }
 
 // 创建单例实例

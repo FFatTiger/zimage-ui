@@ -63,9 +63,33 @@ export function useGallery() {
         fetchGallery();
     }, []);
 
+    const deleteFromGallery = async (id, t) => {
+        if (!confirm(t ? t('messages.confirmDelete') : 'Are you sure you want to delete this item?')) {
+            return false;
+        }
+
+        try {
+            const response = await fetch(`/api/gallery/${id}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                await fetchGallery();
+                return true;
+            } else {
+                console.error('Failed to delete gallery item');
+                return false;
+            }
+        } catch (error) {
+            console.error('Error deleting gallery item:', error);
+            return false;
+        }
+    };
+
     return {
         gallery,
         fetchGallery,
-        shareToGallery
+        shareToGallery,
+        deleteFromGallery
     };
 }

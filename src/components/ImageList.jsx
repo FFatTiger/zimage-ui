@@ -56,9 +56,10 @@ export default function ImageList({
                             alt={item.prompt}
                         />
 
-                        {/* History Actions (Delete/Share) - Only for History Variant */}
-                        {variant === 'history' && (
-                            <div className="absolute top-2 right-2 flex gap-1 z-10">
+                        {/* Actions Overlay */}
+                        <div className="absolute top-2 right-2 flex gap-1 z-10">
+                            {/* History Variant: Share Button */}
+                            {variant === 'history' && (
                                 <Button
                                     variant="secondary"
                                     size="icon"
@@ -71,6 +72,10 @@ export default function ImageList({
                                 >
                                     <Share2 size={14} />
                                 </Button>
+                            )}
+
+                            {/* Delete Button: Show for history OR if onDelete is provided (Admin Gallery) */}
+                            {(variant === 'history' || (variant === 'gallery' && onDelete)) && (
                                 <Button
                                     variant="secondary"
                                     size="icon"
@@ -83,8 +88,8 @@ export default function ImageList({
                                 >
                                     <Trash2 size={14} />
                                 </Button>
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
 
                     {/* Metadata Overlay */}

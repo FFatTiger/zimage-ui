@@ -27,7 +27,7 @@ function App() {
     const [isDarkMode, toggleDarkMode] = (useTheme() as any);
     const [username, setUsername] = (useLocalStorage('comfyui_username', '') as any);
     const { history, addToHistory, deleteHistoryItem, reloadHistory } = (useHistory(username) as any);
-    const { gallery, shareToGallery } = (useGallery() as any);
+    const { gallery, shareToGallery, deleteFromGallery } = (useGallery() as any);
     const { isGenerating, progress, statusText, currentImage, lastTimeTaken, elapsedTime, setCurrentImage, generate } = (useImageGeneration() as any);
 
     // 管理员模式相关（传入用户名）
@@ -77,6 +77,10 @@ function App() {
     const handleShareToGallery = useCallback(async (historyItem: any) => {
         await shareToGallery(historyItem, username, t);
     }, [shareToGallery, username, t]);
+
+    const handleDeleteFromGallery = useCallback(async (id: string) => {
+        await deleteFromGallery(id, t);
+    }, [deleteFromGallery, t]);
 
     // Generate function wrapper
     const handleGenerate = useCallback(async () => {
@@ -180,6 +184,7 @@ function App() {
                 deleteHistoryItem={deleteHistoryItem}
                 shareToGallery={handleShareToGallery}
                 gallery={gallery}
+                deleteGalleryItem={handleDeleteFromGallery}
                 loadGalleryItem={loadHistoryItem}
                 allHistory={allHistory}
                 loadAllHistoryItem={loadHistoryItem}
