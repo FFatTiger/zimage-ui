@@ -360,17 +360,18 @@ class HistoryDB {
         }
 
         const stmt = this.db.prepare(`
-            INSERT INTO gallery (id, history_id, shared_by)
-            VALUES (?, ?, ?)
-        `);
+            INSERT INTO gallery(id, history_id, shared_by, shared_at)
+        VALUES(?, ?, ?, ?)
+            `);
 
         // 使用 crypto 生成 UUID
-        const { v4: uuidv4 } = require('uuid');
+        // const { v4: uuidv4 } = require('uuid'); 
         // 注意：db.js 顶部没有引入 uuid，这里需要处理一下，或者直接用 crypto.randomUUID (Node 14.17+)
         // 我们项目依赖里有 uuid 包，可以在顶部引入，或者这里动态引入
         const id = require('crypto').randomUUID();
+        const sharedAt = Date.now(); // Utilize milliseconds for consistency with migration
 
-        return stmt.run(id, historyId, username);
+        return stmt.run(id, historyId, username, sharedAt);
     }
 
     /**
@@ -379,16 +380,16 @@ class HistoryDB {
     getGallery(limit = 100) {
         // 联表查询
         const stmt = this.db.prepare(`
-            SELECT 
-                g.id as gallery_id,
-                g.shared_by,
-                g.shared_at,
-                h.*
+        SELECT
+        g.id as gallery_id,
+            g.shared_by,
+            g.shared_at,
+            h.*
             FROM gallery g
             JOIN history h ON g.history_id = h.id
             ORDER BY g.shared_at DESC
-            LIMIT ?
-        `);
+        LIMIT ?
+            `);
 
         const rows = stmt.all(limit);
         return rows.map(row => ({

@@ -50,7 +50,7 @@ export default function ImageList({
                             src={item.imageUrl}
                             className={cn(
                                 "absolute inset-0 w-full h-full object-cover transition-all duration-300",
-                                nsfwMode ? 'blur-md group-hover:blur-none' : ''
+                                nsfwMode ? 'blur-md group-hover:blur-none group-active:blur-none' : ''
                             )}
                             loading="lazy"
                             alt={item.prompt}
@@ -58,7 +58,7 @@ export default function ImageList({
 
                         {/* History Actions (Delete/Share) - Only for History Variant */}
                         {variant === 'history' && (
-                            <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                            <div className="absolute top-2 right-2 flex gap-1 z-10">
                                 <Button
                                     variant="secondary"
                                     size="icon"
