@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 export default function ImageList({
     items,
-    variant = 'history', // 'history' | 'gallery'
+    variant = 'history', // 'history' | 'gallery' | 'admin'
     onItemClick,
     onImageClick,
     onShare,
@@ -100,6 +100,18 @@ export default function ImageList({
                         }}>
                             {/* Gallery: User Info */}
                             {variant === 'gallery' && (
+                                <div className="flex items-center gap-2 mb-1.5">
+                                    <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center flex-shrink-0 shadow-sm">
+                                        <User size={12} className="text-primary-foreground" />
+                                    </div>
+                                    <span className="text-xs font-medium text-white truncate shadow-black drop-shadow-sm">
+                                        {item.username || t('gallery.anonymous')}
+                                    </span>
+                                </div>
+                            )}
+
+                            {/* Admin: User Info */}
+                            {variant === 'admin' && (
                                 <div className="flex items-center gap-2 mb-1.5">
                                     <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center flex-shrink-0 shadow-sm">
                                         <User size={12} className="text-primary-foreground" />

@@ -10,11 +10,14 @@ import ImageList from './ImageList';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
+
 function Sidebar({
     showSidebar, setShowSidebar,
     activeTab, onTabChange, // Controlled tab state
     history, loadHistoryItem, deleteHistoryItem, shareToGallery,
     gallery, loadGalleryItem,
+    allHistory, loadAllHistoryItem, // 管理员视图
+    isAdminMode, // 是否为管理员模式
     isDarkMode, toggleDarkMode, nsfwMode, onToggleNsfwMode
 }) {
     const { t } = useTranslation();
@@ -28,7 +31,11 @@ function Sidebar({
             <div className="p-6 border-b bg-background">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold tracking-tight">
-                        {activeTab === 'history' ? t('sidebar.myCreations') : t('gallery.sharedCreations')}
+                        {activeTab === 'history'
+                            ? t('sidebar.myCreations')
+                            : activeTab === 'admin'
+                                ? t('sidebar.allHistory')
+                                : t('gallery.sharedCreations')}
                     </h2>
                     <div className="flex items-center gap-1">
                         <Button
@@ -54,9 +61,12 @@ function Sidebar({
 
                 {/* Tab Switcher */}
                 <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
-                    <TabsList className="w-full grid grid-cols-2">
+                    <TabsList className={cn("w-full grid", isAdminMode ? "grid-cols-3" : "grid-cols-2")}>
                         <TabsTrigger value="history">{t('sidebar.history')}</TabsTrigger>
                         <TabsTrigger value="gallery">{t('sidebar.gallery')}</TabsTrigger>
+                        {isAdminMode && (
+                            <TabsTrigger value="admin">{t('sidebar.admin')}</TabsTrigger>
+                        )}
                     </TabsList>
                 </Tabs>
             </div>
@@ -92,6 +102,17 @@ function Sidebar({
                                 </div>
                             )}
                         </>
+                    )}
+
+                    {/* Admin Content */}
+                    {activeTab === 'admin' && (
+                        <ImageList
+                            items={allHistory || []}
+                            variant="admin"
+                            onItemClick={loadAllHistoryItem}
+                            nsfwMode={nsfwMode}
+                            emptyMessage={t('sidebar.noAdminHistory')}
+                        />
                     )}
                 </div>
             </ScrollArea>

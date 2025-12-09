@@ -40,3 +40,12 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 config.json
+
+# database files
+/data/
+*.db
+*.db-shm
+*.db-wal
+
+# gallery files
+gallery.json

@@ -26,9 +26,14 @@ function App() {
     const isMobile: boolean = (useResponsive(1024) as any);
     const [isDarkMode, toggleDarkMode] = (useTheme() as any);
     const [username, setUsername] = (useLocalStorage('comfyui_username', '') as any);
-    const { history, addToHistory, deleteHistoryItem } = (useHistory() as any);
+    const { history, addToHistory, deleteHistoryItem, reloadHistory } = (useHistory(username) as any);
     const { gallery, shareToGallery } = (useGallery() as any);
     const { isGenerating, progress, statusText, currentImage, lastTimeTaken, elapsedTime, setCurrentImage, generate } = (useImageGeneration() as any);
+
+    // 管理员模式相关
+    const { isAdminMode } = (require('@/hooks/useAdminMode').useAdminMode() as any);
+    const { allHistory, fetchAllHistory } = (require('@/hooks/useAllHistory').useAllHistory() as any);
+    const { syncStatus } = (require('@/hooks/useSyncHistory').useSyncHistory(username) as any);
 
     // UI state
     const [showSidebar, setShowSidebar] = useState(false);
@@ -133,6 +138,20 @@ function App() {
         }
     }, [isMobile]);
 
+    // 加载管理员历史记录（当切换到管理员 tab 时）
+    useEffect(() => {
+        if (isAdminMode && activeTab === 'admin') {
+            fetchAllHistory();
+        }
+    }, [isAdminMode, activeTab, fetchAllHistory]);
+
+    // 同步完成后重新加载历史记录
+    useEffect(() => {
+        if (syncStatus.completed && !syncStatus.isSyncing) {
+            reloadHistory();
+        }
+    }, [syncStatus.completed, syncStatus.isSyncing, reloadHistory]);
+
     return (
         <div className="h-full flex flex-col lg:flex-row overflow-hidden bg-background text-foreground pt-[72px] lg:pt-0">
             {/* Username Modal */}
@@ -162,6 +181,9 @@ function App() {
                 shareToGallery={handleShareToGallery}
                 gallery={gallery}
                 loadGalleryItem={loadHistoryItem}
+                allHistory={allHistory}
+                loadAllHistoryItem={loadHistoryItem}
+                isAdminMode={isAdminMode}
                 isDarkMode={isDarkMode}
                 toggleDarkMode={toggleDarkMode}
                 nsfwMode={nsfwMode}

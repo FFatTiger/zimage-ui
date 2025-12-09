@@ -10,7 +10,10 @@
         "myCreations": "我的作品",
         "history": "历史",
         "gallery": "广场",
+        "admin": "所有用户",
+        "allHistory": "所有用户历史",
         "noHistory": "暂无历史记录",
+        "noAdminHistory": "暂无任何用户历史记录",
         "shareToGallery": "分享到广场",
         "delete": "删除"
     },

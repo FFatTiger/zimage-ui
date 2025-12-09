@@ -10,7 +10,10 @@
         "myCreations": "My Creations",
         "history": "History",
         "gallery": "Gallery",
+        "admin": "All Users",
+        "allHistory": "All Users History",
         "noHistory": "No history yet",
+        "noAdminHistory": "No user history yet",
         "shareToGallery": "Share to Gallery",
         "delete": "Delete"
     },
