@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Z-Image UI
 
-## Getting Started
+A modern, responsive web interface for ComfyUI image generation workflows, featuring DeepSeek prompt enhancement and a shared gallery.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+*   **Modern UI**: Beautiful, responsive design built with Next.js, React, and TailwindCSS.
+*   **Mobile Friendly**: Optimized experience for mobile devices with specific layouts.
+*   **Prompt Enhancement**: Integrated DeepSeek API to reason and enhance your prompts for better image results.
+*   **History & Gallery**: Local history of your generations and a shared gallery to showcase prompts.
+*   **Real-time Progress**: WebSocket integration for real-time generation progress and status updates.
+*   **NSFW Mode**: Built-in blurring for sensitive content.
+
+## Screenshots
+
+### Initial Interface
+![Initial Interface](img/01-initial-interface.png)
+*Clean and simple upload interface*
+
+### Gallery View
+![Gallery View](img/02-gallery-view.png)
+*Grid layout showcasing multiple images with titles and actions*
+
+### Image Preview
+![Image Preview](img/03-image-preview.png)
+*Full-screen image viewer with overlay*
+
+### ComfyUI Integration
+![ComfyUI Workflow](img/04-comfyui-workflow.png)
+*Node-based workflow editor for advanced image generation*
+
+## Setup & Run
+
+### Prerequisites
+*   Node.js 18+
+*   ComfyUI running instance (default: http://127.0.0.1:8188)
+
+### Configuration
+
+Create a `config.json` file in the root directory (or use `.env`):
+
+```json
+{
+    "COMFY_URL": "http://127.0.0.1:8188",
+    "WS_URL": "ws://127.0.0.1:8188",
+    "DEEPSEEK_API_KEY": "your_key"
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Running
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1.  **Development**:
+    ```bash
+    npm run dev
+    ```
+    Access at `http://localhost:3000`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2.  **Production**:
+    ```bash
+    npm run build
+    npm start
+    ```
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Architecture
+- **Framework**: Next.js 14+ (App Router)
+- **Styling**: TailwindCSS + Shadcn/UI
+- **Backend (Server)**: Next.js API Routes + Custom Node.js Server (WebSocket Proxy)
+- **Integration**: Proxies requests to ComfyUI backend
