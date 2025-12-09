@@ -30,7 +30,7 @@ export interface GenerateParams {
 
 export function loadWorkflowTemplate(filename: string): Workflow | null {
     try {
-        const filePath = path.join(process.cwd(), filename);
+        const filePath = path.join(process.cwd(), 'src/config/workflows', filename);
         if (fs.existsSync(filePath)) {
             return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
         }

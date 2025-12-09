@@ -22,6 +22,9 @@ class HistoryDB {
 
         // 初始化表结构
         this.initTables();
+
+        // 执行迁移
+        this.migrateGallery();
     }
 
     /**
@@ -44,11 +47,23 @@ class HistoryDB {
             )
         `);
 
+        // 广场/画廊表
+        this.db.exec(`
+            CREATE TABLE IF NOT EXISTS gallery (
+                id TEXT PRIMARY KEY,
+                history_id TEXT NOT NULL,
+                shared_by TEXT,
+                shared_at INTEGER DEFAULT (strftime('%s', 'now')),
+                FOREIGN KEY (history_id) REFERENCES history(id) ON DELETE CASCADE
+            )
+        `);
+
         // 为常用查询创建索引
         this.db.exec(`
             CREATE INDEX IF NOT EXISTS idx_username ON history(username);
             CREATE INDEX IF NOT EXISTS idx_timestamp ON history(timestamp DESC);
             CREATE INDEX IF NOT EXISTS idx_created_at ON history(created_at DESC);
+            CREATE INDEX IF NOT EXISTS idx_gallery_shared_at ON gallery(shared_at DESC);
         `);
 
         // 同步状态表 - 用于断点续传
@@ -244,6 +259,150 @@ class HistoryDB {
      */
     close() {
         this.db.close();
+    }
+
+    /**
+     * 迁移旧的 gallery.json 数据
+     */
+    migrateGallery() {
+        try {
+            const galleryPath = path.join(process.cwd(), 'gallery.json');
+            if (!fs.existsSync(galleryPath)) return;
+
+            // 检查 gallery 表是否为空
+            const count = this.db.prepare('SELECT COUNT(*) as count FROM gallery').get().count;
+            if (count > 0) {
+                // 如果表不为空，说明已经迁移过或在使用新表，暂不重复迁移
+                // 也可以根据需要改为合并逻辑
+                return;
+            }
+
+            console.log('Migrating gallery.json to database...');
+            const galleryData = JSON.parse(fs.readFileSync(galleryPath, 'utf-8'));
+            const items = galleryData.items || [];
+            if (items.length === 0) return;
+
+            const insertHistory = this.db.prepare(`
+                INSERT OR IGNORE INTO history 
+                (id, username, prompt, negative_prompt, image_url, timestamp, time_taken, params, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%s', 'now'))
+            `);
+
+            const insertGallery = this.db.prepare(`
+                INSERT OR IGNORE INTO gallery (id, history_id, shared_by, shared_at)
+                VALUES (?, ?, ?, ?)
+            `);
+
+            const findHistoryByUrl = this.db.prepare('SELECT id FROM history WHERE image_url = ?');
+
+            this.db.transaction(() => {
+                for (const item of items) {
+                    // 尝试找到对应的 history
+                    let historyId = item.id; // 假设 gallery item id 也是 history id
+                    let historyRecord = this.db.prepare('SELECT id FROM history WHERE id = ?').get(historyId);
+
+                    if (!historyRecord) {
+                        // 尝试通过 url 查找
+                        historyRecord = findHistoryByUrl.get(item.imageUrl);
+                        if (historyRecord) {
+                            historyId = historyRecord.id;
+                        } else {
+                            // 如果都没找到，需要插入 history
+                            // 注意：这里我们使用 item.id 作为 history.id，以保持一致
+                            insertHistory.run(
+                                item.id,
+                                item.username || 'Anonymous',
+                                item.prompt,
+                                item.negative_prompt || '',
+                                item.imageUrl,
+                                item.timestamp,
+                                item.timeTaken || 0,
+                                JSON.stringify(item.params || {})
+                            );
+                        }
+                    }
+
+                    // 插入 gallery
+                    // 为 gallery 条目生成一个新的 UUID 或者复用 item.id ?
+                    // 现在的表结构 gallery.id 是主键。
+                    // 我们可以复用 item.id 作为 gallery.id 吗？
+                    // 如果我们把 history.id 设为了 item.id，那么 gallery.id 也用 item.id 可能会混淆，
+                    // 但逻辑上没问题，因为是两张表。
+                    // 只要 history_id 正确指向 history 表的 id 即可。
+                    insertGallery.run(
+                        require('crypto').randomUUID(), // 为 gallery 记录生成新 ID
+                        historyId,
+                        item.username || 'Anonymous',
+                        new Date(item.timestamp).getTime()
+                    );
+                }
+            })();
+
+            console.log(`Successfully migrated ${items.length} gallery items.`);
+            // 重命名文件以防重复迁移
+            fs.renameSync(galleryPath, galleryPath + '.bak');
+
+        } catch (e) {
+            console.error("Error migrating gallery:", e);
+        }
+    }
+
+    /**
+     * 添加到画廊
+     * @param {string} historyId - 关联的 history ID
+     * @param {string} username - 分享者
+     */
+    addToGallery(historyId, username) {
+        // 首先验证 historyId 是否存在
+        const historyExists = this.exists(historyId);
+        if (!historyExists) {
+            throw new Error(`History item ${historyId} not found`);
+        }
+
+        const stmt = this.db.prepare(`
+            INSERT INTO gallery (id, history_id, shared_by)
+            VALUES (?, ?, ?)
+        `);
+
+        // 使用 crypto 生成 UUID
+        const { v4: uuidv4 } = require('uuid');
+        // 注意：db.js 顶部没有引入 uuid，这里需要处理一下，或者直接用 crypto.randomUUID (Node 14.17+)
+        // 我们项目依赖里有 uuid 包，可以在顶部引入，或者这里动态引入
+        const id = require('crypto').randomUUID();
+
+        return stmt.run(id, historyId, username);
+    }
+
+    /**
+     * 获取画廊列表
+     */
+    getGallery(limit = 100) {
+        // 联表查询
+        const stmt = this.db.prepare(`
+            SELECT 
+                g.id as gallery_id,
+                g.shared_by,
+                g.shared_at,
+                h.*
+            FROM gallery g
+            JOIN history h ON g.history_id = h.id
+            ORDER BY g.shared_at DESC
+            LIMIT ?
+        `);
+
+        const rows = stmt.all(limit);
+        return rows.map(row => ({
+            id: row.gallery_id, // Gallery item ID
+            history_id: row.id, // History item ID
+            username: row.shared_by, // Use shared_by as the primary username for display in gallery
+            prompt: row.prompt,
+            negative_prompt: row.negative_prompt,
+            imageUrl: row.image_url,
+            timestamp: new Date(row.shared_at).toISOString(), // Use shared time
+            timeTaken: row.time_taken,
+            params: JSON.parse(row.params || '{}'),
+            original_username: row.username // Keep track of who originally generated it
+        }));
     }
 }
 

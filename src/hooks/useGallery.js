@@ -25,6 +25,8 @@ export function useGallery() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
+                    historyId: historyItem.id, // Explicitly send history ID
+                    id: historyItem.id, // Fallback/Legacy ID
                     username: username || 'Anonymous',
                     prompt: historyItem.prompt,
                     negative_prompt: historyItem.negative_prompt,
