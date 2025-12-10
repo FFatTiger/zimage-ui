@@ -2,10 +2,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { CONFIG } from '@/lib/config';
 import { prepareGenerateWorkflow, GenerateParams } from '@/lib/workflow';
+import { translate } from 'google-translate-api-x';
 
 export async function POST(req: NextRequest) {
     try {
         const body: GenerateParams = await req.json();
+
+        if (body.google_translate && body.prompt) {
+            try {
+                const res = await translate(body.prompt, { to: 'en' });
+                body.prompt = res.text;
+            } catch (error) {
+                console.error("Translation error:", error);
+            }
+        }
 
         const workflow = prepareGenerateWorkflow(body);
         if (!workflow) {

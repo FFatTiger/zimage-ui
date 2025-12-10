@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronUp, Send, Maximize2, Minimize2, Dice5, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Switch } from '@/components/ui/switch';
 
 const RESOLUTION_PRESETS = [
     { key: '720p', name: '720p', width: 1280, height: 720 },
@@ -217,6 +218,18 @@ export default function QuickInput({
                                 </label>
                                 <input type="number" value={params.seed} onChange={(e) => setParams(prev => ({ ...prev, seed: parseInt(e.target.value) }))} className="w-full bg-muted/50 border border-input rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary outline-none" />
                             </div>
+                        </div>
+
+                        {/* Google Translate Switch */}
+                        <div className="flex items-center justify-between bg-muted/30 p-3 rounded-xl border border-border">
+                            <div className="flex flex-col gap-0.5">
+                                <span className="text-sm font-medium text-foreground">Google 翻译</span>
+                                <span className="text-xs text-muted-foreground">自动将提示词翻译为英文</span>
+                            </div>
+                            <Switch
+                                checked={params.google_translate || false}
+                                onCheckedChange={(checked) => setParams(prev => ({ ...prev, google_translate: checked }))}
+                            />
                         </div>
                     </div>
                 )}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Dice5, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Switch } from '@/components/ui/switch';
 
 // Resolution presets - keys for translation
 const RESOLUTION_PRESETS = [
@@ -16,10 +17,10 @@ const RESOLUTION_PRESETS = [
 export default function Controls({ showControls, params, setParams, randomizeSeed, generate, isGenerating }) {
     const { t } = useTranslation();
     const handleChange = (e) => {
-        const { name, value, type } = e.target;
+        const { name, value, type, checked } = e.target;
         setParams(prev => ({
             ...prev,
-            [name]: type === 'number' ? parseFloat(value) : value
+            [name]: type === 'checkbox' ? checked : (type === 'number' ? parseFloat(value) : value)
         }));
     };
 
@@ -184,6 +185,18 @@ export default function Controls({ showControls, params, setParams, randomizeSee
                                 className="w-full bg-muted/50 border border-input rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:border-primary outline-none"
                             />
                         </div>
+                    </div>
+
+                    {/* Google Translate Switch */}
+                    <div className="col-span-2 flex items-center justify-between bg-muted/30 p-3 rounded-xl border border-border">
+                        <div className="flex flex-col gap-0.5">
+                            <span className="text-sm font-medium text-foreground">Google 翻译</span>
+                            <span className="text-xs text-muted-foreground">自动将提示词翻译为英文</span>
+                        </div>
+                        <Switch
+                            checked={params.google_translate || false}
+                            onCheckedChange={(checked) => setParams(prev => ({ ...prev, google_translate: checked }))}
+                        />
                     </div>
                 </div>
 

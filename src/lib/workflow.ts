@@ -26,6 +26,7 @@ export interface GenerateParams {
     // Img2Img specific
     input_image_name?: string;
     control_strength?: number;
+    google_translate?: boolean;
 }
 
 export function loadWorkflowTemplate(filename: string): Workflow | null {

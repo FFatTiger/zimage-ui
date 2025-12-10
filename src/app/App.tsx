@@ -64,8 +64,24 @@ function App() {
         cfg: 1.0,
         width: 1024,
         height: 1024,
-        denoise: 1.0
+        denoise: 1.0,
+        google_translate: false
     });
+
+    // Restore google_translate preference
+    useEffect(() => {
+        const saved = localStorage.getItem('google_translate_pref');
+        if (saved !== null) {
+            setParams(prev => ({ ...prev, google_translate: saved === 'true' }));
+        }
+    }, []);
+
+    // Save google_translate preference
+    useEffect(() => {
+        if (typeof params.google_translate === 'boolean') {
+            localStorage.setItem('google_translate_pref', String(params.google_translate));
+        }
+    }, [params.google_translate]);
 
     // Handle username save
     const handleUsernameSave = useCallback((name: string) => {
