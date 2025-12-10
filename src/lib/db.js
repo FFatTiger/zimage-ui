@@ -138,7 +138,7 @@ class HistoryDB {
         const stmt = this.db.prepare(`
             SELECT * FROM history 
             WHERE username = ? 
-            ORDER BY timestamp DESC 
+            ORDER BY created_at DESC 
             LIMIT ?
         `);
 
@@ -161,7 +161,7 @@ class HistoryDB {
     getAllHistory(limit = 200) {
         const stmt = this.db.prepare(`
             SELECT * FROM history 
-            ORDER BY timestamp DESC 
+            ORDER BY created_at DESC 
             LIMIT ?
         `);
 
